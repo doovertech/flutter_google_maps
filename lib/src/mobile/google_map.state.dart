@@ -4,16 +4,15 @@
 
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
-
 import 'package:flinq/flinq.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_directions_api/google_directions_api.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'utils.dart';
-import '../core/utils.dart' as utils;
 import '../core/google_map.dart' as gmap;
 import '../core/map_items.dart' as items;
+import '../core/utils.dart' as utils;
+import 'utils.dart';
 
 class GoogleMapState extends gmap.GoogleMapStateBase {
   final directionsService = DirectionsService();
@@ -140,10 +139,10 @@ class GoogleMapState extends gmap.GoogleMapStateBase {
   FutureOr<GeoCoord> get center async =>
       (await _controller?.getVisibleRegion())?.toGeoCoordBounds()?.center;
 
-  FutureOr<double> get zoom async =>
-      (await _controller?.getZoomLevel());
+  FutureOr<double> get zoom async => (await _controller?.getZoomLevel());
 
-  FutureOr<GeoCoordBounds> get bounds async => (await _controller?.getVisibleRegion()).toGeoCoordBounds();
+  FutureOr<GeoCoordBounds> get bounds async =>
+      (await _controller?.getVisibleRegion()).toGeoCoordBounds();
 
   @override
   void changeMapStyle(
@@ -194,7 +193,9 @@ class GoogleMapState extends gmap.GoogleMapStateBase {
       position: position.toLatLng(),
       icon: icon == null
           ? BitmapDescriptor.defaultMarker
-          : await _getBmpDesc('${fixAssetPath(icon)}$icon'),
+          : (utils.ByteString.isByteString(icon)
+              ? BitmapDescriptor.fromBytes(utils.ByteString.fromString(icon))
+              : await _getBmpDesc('${fixAssetPath(icon)}$icon')),
       infoWindow: info != null
           ? InfoWindow(
               title: info,
@@ -509,8 +510,7 @@ class GoogleMapState extends gmap.GoogleMapStateBase {
               onTap: (coords) => widget.onTap?.call(coords?.toGeoCoord()),
               onLongPress: (coords) =>
                   widget.onLongPress?.call(coords?.toGeoCoord()),
-              onCameraMove: (position) => 
-                widget.onMapMove?.call(position),
+              onCameraMove: (position) => widget.onMapMove?.call(position),
               onMapCreated: (GoogleMapController controller) {
                 _controller = controller;
                 _controller.setMapStyle(widget.mapStyle);
