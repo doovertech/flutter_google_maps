@@ -2,24 +2,22 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:html';
 import 'dart:async';
+import 'dart:html';
 import 'dart:ui' as ui;
 
-import 'package:flutter/widgets.dart';
-import 'package:flutter/scheduler.dart' show SchedulerBinding;
-import 'package:google_maps_flutter/google_maps_flutter.dart' as gmaps;
-
-import 'package:uuid/uuid.dart';
 import 'package:flinq/flinq.dart';
-import 'package:google_maps/google_maps.dart';
+import 'package:flutter/scheduler.dart' show SchedulerBinding;
+import 'package:flutter/widgets.dart';
 import 'package:google_directions_api/google_directions_api.dart'
     show GeoCoord, GeoCoordBounds;
+import 'package:google_maps/google_maps.dart';
+import 'package:uuid/uuid.dart';
 
-import 'utils.dart';
 import '../core/google_map.dart';
-import '../core/utils.dart' as utils;
 import '../core/map_items.dart' as items;
+import '../core/utils.dart' as utils;
+import 'utils.dart';
 
 class GoogleMapState extends GoogleMapStateBase {
   final htmlId = Uuid().v1();
@@ -117,7 +115,7 @@ class GoogleMapState extends GoogleMapStateBase {
   FutureOr<GeoCoord> get center => _map.center?.toGeoCoord();
 
   FutureOr<double> get zoom => _map.zoom.toDouble();
-  
+
   FutureOr<GeoCoordBounds> get bounds => _map.bounds.toGeoCoordBounds();
 
   @override
@@ -558,15 +556,17 @@ class GoogleMapState extends GoogleMapStateBase {
 
         _map = GMap(elem, _mapOptions);
 
-        _subscriptions.add(_map.onCenterChanged.listen(
-            (event) {
-              gmaps.CameraPosition pos = gmaps.CameraPosition(
-                target: gmaps.LatLng( _map.center.lat,  _map.center.lng), 
-                zoom: _map.zoom.toDouble(), 
-                tilt: _map.tilt,
-              );
-              widget.onMapMove?.call(pos);
-            }));
+        _subscriptions.add(_map.onCenterChanged.listen((event) {
+          gmaps.CameraPosition pos = gmaps.CameraPosition(
+            target: gmaps.LatLng(_map.center.lat, _map.center.lng),
+            zoom: _map.zoom.toDouble(),
+            tilt: _map.tilt,
+          );
+          widget.onMapMove?.call(pos);
+        }));
+        _subscriptions.add(_map.onIdle.listen((event) {
+          widget.onMapIdle?.call();
+        }));
         _subscriptions.add(_map.onClick.listen(
             (event) => widget.onTap?.call(event?.latLng?.toGeoCoord())));
         _subscriptions.add(_map.onRightclick.listen(
