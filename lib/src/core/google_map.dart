@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:html';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_directions_api/google_directions_api.dart'
@@ -89,7 +87,7 @@ class GoogleMap extends StatefulWidget {
   final ValueChanged<GeoCoord> onLongPress;
 
   final ValueChanged<gmap.CameraPosition> onMapMove;
-  final VoidCallback onMapIdle;
+  final void Function() onMapIdle;
 
   /// Set of mobile map preferences.
   final MobileMapPreferences mobilePreferences;

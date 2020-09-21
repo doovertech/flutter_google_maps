@@ -12,6 +12,7 @@ import 'package:flutter/widgets.dart';
 import 'package:google_directions_api/google_directions_api.dart'
     show GeoCoord, GeoCoordBounds;
 import 'package:google_maps/google_maps.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gmap;
 import 'package:uuid/uuid.dart';
 
 import '../core/google_map.dart';
@@ -557,8 +558,8 @@ class GoogleMapState extends GoogleMapStateBase {
         _map = GMap(elem, _mapOptions);
 
         _subscriptions.add(_map.onCenterChanged.listen((event) {
-          gmaps.CameraPosition pos = gmaps.CameraPosition(
-            target: gmaps.LatLng(_map.center.lat, _map.center.lng),
+          gmap.CameraPosition pos = gmap.CameraPosition(
+            target: gmap.LatLng(_map.center.lat, _map.center.lng),
             zoom: _map.zoom.toDouble(),
             tilt: _map.tilt,
           );
