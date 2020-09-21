@@ -511,6 +511,7 @@ class GoogleMapState extends gmap.GoogleMapStateBase {
               onLongPress: (coords) =>
                   widget.onLongPress?.call(coords?.toGeoCoord()),
               onCameraMove: (position) => widget.onMapMove?.call(position),
+              onCameraIdle: () => widget.onMapIdle?.call(),
               onMapCreated: (GoogleMapController controller) {
                 _controller = controller;
                 _controller.setMapStyle(widget.mapStyle);
